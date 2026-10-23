@@ -62,8 +62,8 @@ local entity = spawner.Create({
 		Break = true
 	},
 	Death = {
-		Type = "Curious"
-		Hints = {"Oh you found your way here?", "But whatl'm curious about is who you died to", "Hmm this one chases you down", "So maybe you could call it torment"},
+		Type = "Guiding", -- "Curious"
+		Hints = {"You died to Torment", "IF you hear a static", "He will start chasing you", "Hide or run when he does this"},
 		Cause = "Torment"
 	}
 })
@@ -72,10 +72,10 @@ local entity = spawner.Create({
 
 entity:SetCallback("OnSpawned", function()
 	print("Entity has spawned")
-	require(game.Players.LocalPlayer.PlayerGui.MainUI.Initiator.Main_Game).caption("run...", true)
+	require(game.Players.LocalPlayer.PlayerGui.MainUI.Initiator.Main_Game).caption("RUN", true)
 	local bruh = workspace.Torment.Main
 
-	local move = GetGitSound("https://github.com/Potato032/Entt/raw/refs/heads/main/SpookyChase.mp3","Reboun")
+	local move = GetGitSound("https://github.com/eoyoustme/ohh/blob/main/TormentNew%20(1)%20(1).mp3?raw=true","Reboun")
 	move.Parent = bruh
 	move.Name = "Move"
 	move.Volume = 0
