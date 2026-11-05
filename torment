@@ -1,31 +1,19 @@
-game.ReplicatedStorage.GameData.LatestRoom.Changed:Wait()
-
-function GetGitSound(GithubSnd,SoundName)
-	local url=GithubSnd
-	if not isfile(SoundName..".mp3") then
-		writefile(SoundName..".mp3", game:HttpGet(url))
-	end
-	local sound=Instance.new("Sound")
-	sound.SoundId=(getcustomasset or getsynasset)(SoundName..".mp3")
-	return sound
-end
-
 ---====== Load spawner ======---
 
-local spawner = loadstring(game:HttpGet("https://raw.githubusercontent.com/RegularVynixu/Utilities/main/Doors/Entity%20Spawner/V2/Source.lua"))()
+local Spawner = loadstring(game:HttpGet("https://raw.githubusercontent.com/RegularVynixu/DOORS-Entity-Spawner-V2/main/init.luau"))()
 
 ---====== Create entity ======---
 
-local entity = spawner.Create({
+local entity = Spawner:Create({
 	Entity = {
 		Name = "Torment",
-		Asset = "rbxassetid://14019230123",
-		HeightOffset = 0
+		Asset = "https://github.com/eoyoustme/Fragmentend-Reiginited/blob/main/Torment.rbxm?raw=true",
+		HeightOffset = 0.8
 	},
 	Lights = {
 		Flicker = {
 			Enabled = true,
-			Duration = 10
+			Duration = 5
 		},
 		Shatter = true,
 		Repair = false
@@ -40,7 +28,7 @@ local entity = spawner.Create({
 	},
 	Movement = {
 		Speed = 30,
-		Delay = 10,
+		Delay = 0,
 		Reversed = false
 	},
 	Rebounding = {
@@ -63,8 +51,8 @@ local entity = spawner.Create({
 	},
 	Death = {
 		Type = "Guiding", -- "Curious"
-		Hints = {"You died to Torment", "IF you hear a static", "He will start chasing you", "Hide or run when he does this"},
-		Cause = "Torment"
+		Hints = {"Death", "Hints", "Go", "Here"},
+		Cause = ""
 	}
 })
 
@@ -72,23 +60,205 @@ local entity = spawner.Create({
 
 entity:SetCallback("OnSpawned", function()
 	print("Entity has spawned")
-	require(game.Players.LocalPlayer.PlayerGui.MainUI.Initiator.Main_Game).caption("RUN", true)
-	local bruh = workspace.Torment.Main
-
-	local move = GetGitSound("https://github.com/eoyoustme/ohh/blob/main/TormentNew%20(1)%20(1).mp3?raw=true","Reboun")
-	move.Parent = bruh
-	move.Name = "Move"
-	move.Volume = 0
-	move.Looped = true
-	move.RollOffMaxDistance = 500
-	move.RollOffMinDistance = 300
+	require(game.Players.LocalPlayer.PlayerGui.MainUI.Initiator.Main_Game).caption("Guiding Light : RUN NOW", true)
+	local function GetGitSound(GithubSnd, SoundName)
+		local url = GithubSnd
+		if not isfile(SoundName .. ".mp3") then
+			writefile(SoundName .. ".mp3", game:HttpGet(url))
+		end
+		local sound = Instance.new("Sound")
+		sound.SoundId = (getcustomasset or getsynasset)(SoundName .. ".mp3")
+		return sound
+	end
+	local Jumpscare = GetGitSound("https://github.com/eoyoustme/Fragmentend-Reiginited/blob/main/Torment.mp3?raw=true","Torment")
+	Jumpscare.Parent = workspace
+	Jumpscare.Volume = 3.5
+	Jumpscare.Name = "am"
+	Jumpscare.PlaybackSpeed = 1
+	Jumpscare:Play()
+	
+	wait(3)
+	require(game.Players.LocalPlayer.PlayerGui.MainUI.Initiator.Main_Game).caption("Why are you running child?", true)
+wait(3)
+	require(game.Players.LocalPlayer.PlayerGui.MainUI.Initiator.Main_Game).caption("Your submission is inevitable", true)
 end)
 
 entity:SetCallback("OnStartMoving", function()
 	print("Entity has started moving")
+	local player = game.Players.LocalPlayer
+	local playerGui = player:WaitForChild("PlayerGui")
+	local character = player.Character or player.CharacterAdded:Wait()
+	local humanoid = character:WaitForChild("Humanoid")
+	local camera = workspace.CurrentCamera
+	task.spawn(function()
+		while true do
+			task.wait(0.5)
+
+			local player = game.Players.LocalPlayer
+			local char = player.Character
+			if not char then continue end
+
+			local hum = char:FindFirstChildWhichIsA("Humanoid")
+			local hrp = char:FindFirstChild("HumanoidRootPart")
+			local entity = workspace:FindFirstChild("Torment") and workspace.Torment:FindFirstChildWhichIsA("BasePart")
+
+			if hum and hrp and entity then
+				if (hrp.Position - entity.Position).Magnitude <= 50 then
+					if hum.Health > 0 then
+						hum.Health = 0
+						local screenGui = Instance.new("ScreenGui")
+						screenGui.Parent = playerGui
+						screenGui.Name = "ScreenGui"
+						screenGui.IgnoreGuiInset = true
+
+						local stopEffects = false
+						local doneFading = false
+
+						-- Âm thanh jumpscare
+						local killSound = Instance.new("Sound")
+						killSound.Parent = workspace
+						killSound.PlaybackSpeed = 1
+						killSound.SoundId = "rbxassetid://18459521002"
+						killSound.Name = "Dear god death sound chat"
+						killSound.Volume = 10
+						killSound.Looped = true
+
+						-- Hiệu ứng âm thanh
+						Instance.new("FlangeSoundEffect", killSound).Rate = 0.2
+						Instance.new("TremoloSoundEffect", killSound).Frequency = 1
+						Instance.new("PitchShiftSoundEffect", killSound).Octave = 1
+						Instance.new("DistortionSoundEffect", killSound).Level = 0.2
+
+						-- UI
+						local background = Instance.new("ImageLabel", screenGui)
+						background.Size = UDim2.new(1, 0, 1, 0)
+						background.Image = "rbxassetid://1712510813"
+						background.ImageTransparency = 0.5
+						background.BackgroundColor3 = Color3.new(0, 0, 0)
+						background.BackgroundTransparency = 0
+
+						local face = Instance.new("ImageLabel", screenGui)
+						face.AnchorPoint = Vector2.new(0.5, 0.5)
+						face.Position = UDim2.new(0.5, 0, 0.589, 0)
+						face.Size = UDim2.new(0, 30, 0, 30)
+						face.Image = "rbxassetid://11395249132"
+						face.BackgroundTransparency = 1
+
+						local text = Instance.new("ImageLabel", screenGui)
+						text.AnchorPoint = Vector2.new(0.5, 0.5)
+						text.Position = UDim2.new(0.5, 0, 0.5, 0)
+						text.Size = UDim2.new(0, 150, 0, 150)
+						text.Image = "rbxassetid://99132041298170"
+						text.BackgroundTransparency = 1
+
+						killSound:Play()
+
+						-- Camera zoom
+						local startFov = camera.FieldOfView
+						local zoomFov = 60
+						local zoomDuration = 1.1
+
+						camera.CameraType = Enum.CameraType.Scriptable
+						game:GetService("TweenService"):Create(camera, TweenInfo.new(zoomDuration), {FieldOfView = zoomFov}):Play()
+
+						game:GetService("TweenService"):Create(face, TweenInfo.new(zoomDuration), {
+							Size = UDim2.new(0, 1200, 0, 1200),
+							Position = UDim2.new(0.5, 0, 0.5, 0)
+						}):Play()
+
+						-- Jumpscare Effects
+						task.spawn(function()
+							while not stopEffects do
+								background.ImageTransparency = 0.3
+								background.BackgroundTransparency = 0
+								task.wait(0.1)
+								background.ImageTransparency = 0
+								background.BackgroundTransparency = 0.3
+								task.wait(0.1)
+							end
+						end)
+
+						task.spawn(function()
+							while not stopEffects do
+								background.Image = "rbxassetid://131073231978514"
+								task.wait(0.0589)
+								background.Image = "rbxassetid://105841646930424"
+								task.wait(0.0589)
+							end
+						end)
+
+						task.spawn(function()
+							while not stopEffects do
+								face.Rotation = 10
+								face.Image = "rbxassetid://132219569139802"
+								task.wait(0)
+								face.Rotation = -10
+								task.wait(0)
+							end
+						end)
+
+						task.spawn(function()
+							while not stopEffects do
+								text.Image = "rbxassetid://88490592395124"
+								task.wait(0.0589)
+								text.Image = "rbxassetid://99132041298170"
+								task.wait(0.0589)
+							end
+						end)
+
+						task.spawn(function()
+							while not stopEffects do
+								text.Position = UDim2.new(math.random(), 0, math.random(), 0)
+								task.wait(0.05)
+							end
+						end)
+
+						task.spawn(function()
+							while not stopEffects do
+								text.ImageTransparency = 0
+								task.wait(0.1)
+								text.ImageTransparency = 1
+								task.wait(0.1)
+							end
+						end)
+
+						-- Đợi và fade out
+						task.wait(zoomDuration)
+						stopEffects = true
+						killSound:Stop()
+
+						task.spawn(function()
+							while not doneFading do
+								face.ImageTransparency = math.min(face.ImageTransparency + 0.1, 1)
+								text.ImageTransparency = math.min(text.ImageTransparency + 0.1, 1)
+								background.ImageTransparency = math.min(background.ImageTransparency + 0.1, 1)
+								background.BackgroundTransparency = math.min(background.BackgroundTransparency + 0.1, 1)
+								if face.ImageTransparency >= 1 then
+									doneFading = true
+								end
+								task.wait(0.05)
+							end
+							screenGui:Destroy()
+						end)
+
+						task.wait(0.7)
+						camera.CameraType = Enum.CameraType.Custom
+						camera.FieldOfView = startFov
+
+						local stats = game:GetService("ReplicatedStorage").GameStats:FindFirstChild("Player_" .. player.Name)
+						if stats and stats:FindFirstChild("Total") then
+							stats.Total.DeathCause.Value = "Torment"
+						end
+
+						break -- hoặc return
+					end
+				end
+			end
+		end
+	end)
 end)
 
-entity:SetCallback("OnEnterRoom", function(room, firstTime)
+entity:SetCallback("OnEnterRoom", function(room: Model, firstTime: boolean)
 	if firstTime == true then
 		print("Entity has entered room: ".. room.Name.. " for the first time")
 	else
@@ -96,7 +266,7 @@ entity:SetCallback("OnEnterRoom", function(room, firstTime)
 	end
 end)
 
-entity:SetCallback("OnLookAt", function(lineOfSight)
+entity:SetCallback("OnLookAt", function(lineOfSight: boolean)
 	if lineOfSight == true then
 		print("Player is looking at entity")
 	else
@@ -104,7 +274,7 @@ entity:SetCallback("OnLookAt", function(lineOfSight)
 	end
 end)
 
-entity:SetCallback("OnRebounding", function(startOfRebound)
+entity:SetCallback("OnRebounding", function(startOfRebound: boolean)
 	if startOfRebound == true then
 		print("Entity has started rebounding")
 	else
@@ -114,20 +284,35 @@ end)
 
 entity:SetCallback("OnDespawning", function()
 	print("Entity is despawning")
+	local model = game.Workspace.Torment.Main
+	model:Destroy()
+	local voice = game.Workspace.am
+	voice:Destroy()
+	
+	---====== Load achievement giver ======---
+	local achievementGiver = loadstring(game:HttpGet("https://raw.githubusercontent.com/RegularVynixu/Utilities/main/Doors/Custom%20Achievements/Source.lua"))()
+
+	---====== Display achievement ======---
+	achievementGiver({
+		Title = "SUFFERING",
+		Desc = "Im coming..",
+		Reason = "Survive Torment",
+		Image = "rbxassetid://101914212937"
+	})
 end)
 
 entity:SetCallback("OnDespawned", function()
 	print("Entity has despawned")
 end)
 
-entity:SetCallback("OnDamagePlayer", function(newHealth)
+entity:SetCallback("OnDamagePlayer", function(newHealth: number)
 	local player = game.Players.LocalPlayer
 	local playerGui = player:WaitForChild("PlayerGui")
 	local character = player.Character or player.CharacterAdded:Wait()
 	local humanoid = character:WaitForChild("Humanoid")
 	local camera = workspace.CurrentCamera
-
-	if newHealth == 0 then
+	if newHealth <= 0 then
+		print("Entity has killed the player")
 		local screenGui = Instance.new("ScreenGui")
 		screenGui.Parent = playerGui
 		screenGui.Name = "ScreenGui"
@@ -266,6 +451,7 @@ entity:SetCallback("OnDamagePlayer", function(newHealth)
 		task.wait(0.7)
 		camera.CameraType = Enum.CameraType.Custom
 		camera.FieldOfView = startFov
+
 	else
 		print("Entity has damaged the player")
 	end
@@ -284,15 +470,4 @@ end)
 
 ---====== Run entity ======---
 
-entity:Run()
-
----====== Load achievement giver ======---
-local achievementGiver = loadstring(game:HttpGet("https://raw.githubusercontent.com/RegularVynixu/Utilities/main/Doors/Custom%20Achievements/Source.lua"))()
-
----====== Display achievement ======---
-achievementGiver({
-    Title = "Stalking game",
-    Desc = "I'm watching you",
-    Reason = "Encounter Torment",
-    Image = "rbxassetid://73207762917342"
-})
+entity:Run(true)
