@@ -60,7 +60,7 @@ local entity = Spawner:Create({
 
 entity:SetCallback("OnSpawned", function()
 	print("Entity has spawned")
-	require(game.Players.LocalPlayer.PlayerGui.MainUI.Initiator.Main_Game).caption("Guiding Light : RUN NOW", true)
+	require(game.Players.LocalPlayer.PlayerGui.MainUI.Initiator.Main_Game).caption("RUN NOW", true)
 	local function GetGitSound(GithubSnd, SoundName)
 		local url = GithubSnd
 		if not isfile(SoundName .. ".mp3") then
@@ -70,7 +70,7 @@ entity:SetCallback("OnSpawned", function()
 		sound.SoundId = (getcustomasset or getsynasset)(SoundName .. ".mp3")
 		return sound
 	end
-	local Jumpscare = GetGitSound("https://github.com/eoyoustme/Fragmentend-Reiginited/blob/main/Torment.mp3?raw=true","Torment")
+	local Jumpscare = GetGitSound("https://github.com/firerygames055/torment-better-version/raw/refs/heads/main/SpookyChase.mp3","Torment")
 	Jumpscare.Parent = workspace
 	Jumpscare.Volume = 3.5
 	Jumpscare.Name = "am"
